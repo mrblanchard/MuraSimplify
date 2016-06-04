@@ -1,15 +1,13 @@
 # Mura Simplify
 
-Mura Simplify is a plugin for Mura CMS, the feature-rich CMS written in ColdFusion. It enables you to simplify the user experience of the Mura CMS administration area for different user roles.
-
-Mura Simplify can enable or disable almost every aspect of the Mura CMS administration area. Including the main navigation, site manager columns, content tabs and content attributes. All of this is customizable per user group and per content type (class extension).
+Mura Simplify is a plugin for Mura CMS that enables you to simplify the user experience of the administration area for different user roles. It can enable or disable a wide variety of features of the administration area, including the main navigation, site manager columns, content tabs and content attributes.
 
 ## Minimum Requirements
 
 - Mura CMS v6.x
 - Adobe ColdFusion v10.x or Railo v4.x
 
-## Importent notice
+## Important notice
 
 Mura Simplify is not a security plugin or permission system. It simply tries to make the administration area easier to use for authorized users. It provides this simplification through the use of CSS and Javascript.
 

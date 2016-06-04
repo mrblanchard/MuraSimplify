@@ -5,7 +5,6 @@ Mura Simplify is a plugin for Mura CMS that enables you to simplify the user exp
 ## Minimum Requirements
 
 - Mura CMS v6.x
-- Adobe ColdFusion v10.x or Railo v4.x
 
 ## Important notice
 

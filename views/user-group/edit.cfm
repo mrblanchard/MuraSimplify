@@ -15,7 +15,8 @@
                         code: "#request.muraSimplify.qFeatures.code#",
                         label: "#request.muraSimplify.qFeatures.label#",
                         parentId: #request.muraSimplify.qFeatures.parentId#,
-                        required: #request.muraSimplify.qFeatures.required#
+                        required: #request.muraSimplify.qFeatures.required#,
+                        enabled: #request.muraSimplify.qFeatures.enabled#
                     }
                 </cfloop>
             ]
@@ -64,7 +65,11 @@
                 hierarchy = {},
                 hierarchyId,
                 depth,
-                style;
+                style,
+                checked,
+                featureId,
+                parentId,
+                readonly;
             for(var i = 0; i < muraSimplify.features.length; i++) {
                 hierarchy[muraSimplify.features[i].featureId] = 
                     muraSimplify.features[i].parentId;
@@ -72,27 +77,77 @@
             for(var i = 0; i < muraSimplify.features.length; i++) {
                 depth = 0;
                 style = '';
+                checked = '';
+                readonly = '';
                 hierarchyId = muraSimplify.features[i].featureId;
+                featureId = muraSimplify.features[i].featureId;
+                parentId = muraSimplify.features[i].parentId;
+                name = 'muraSimplifyData.features.' +
+                    muraSimplify.features[i].featureId;
+
                 while (hierarchy[hierarchyId] > 0) {
                     depth ++;
                     hierarchyId = hierarchy[hierarchyId];
                 }
-                name = 'muraSimplifyData.features.' +
-                    muraSimplify.features[i].featureId;
                 if (depth > 0) {
                     style = ' style="margin-left: ' + (depth * 30) + 'px;"';
                 }
+                if (muraSimplify.features[i].enabled > 0) {
+                    checked = ' checked="checked"';
+                }
+                if (muraSimplify.features[i].required > 0) {
+                    readonly = ' disabled="disabled"';
+                }
                 $features.append('\
-                    <label class="clearfix mura-simplify-checkbox"\
+                    <label\
+                        class="clearfix mura-simplify-checkbox"\
                         ' + style + '>\
                         <input\
                             type="checkbox"\
                             name="' + name + '"\
-                            checked="checked" />\
+                            data-feature-id="' + featureId + '"\
+                            data-parent-id="' + parentId + '"\
+                            ' + readonly + '\
+                            ' + checked + ' />\
                         <span>' + muraSimplify.features[i].label + '</span>\
                     </label>\
                 ');
             }
+            $('.mura-simplify-checkbox input').on('change', function() {
+                var $this = $(this);
+                var parentId = $this.attr('data-parent-id');
+                var $parent = $('[data-feature-id="' + parentId + '"]');
+                if ($this.is(':checked')) {
+
+                    // Check the parent
+                    if (!$parent.is(':checked')) {
+                        $parent.prop('checked', true);
+                        $parent.trigger('change');
+                    }
+
+                } else {
+
+                    var featureId = $this.attr('data-feature-id');
+                    var $siblings = $('[data-parent-id="' + parentId + '"]');
+                    var $children = $('[data-parent-id="' + featureId + '"]');
+
+                    // If all siblings are unchecked, uncheck the parent
+                    if ($siblings.filter(':checked').length < 1) {
+                        if ($parent.is(':checked')) {
+                            $parent.prop('checked', false);
+                            $parent.trigger('change');
+                        }
+                    }
+
+                    // Uncheck all children
+                    $children.filter(':checked').each(function() {
+                        var $child = $(this);
+                        $child.prop('checked', false);
+                        $child.trigger('change');
+                    });
+                }
+
+            });
         });
     </script>
 </cfoutput>

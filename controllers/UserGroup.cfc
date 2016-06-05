@@ -18,10 +18,12 @@ component {
         request.muraSimplify = {};
 
         var groupId = "";
-        if (structKeyExists(url, "userId")) {
+        if (structKeyExists(url, "userId") && len(url.userId) > 0) {
             groupId = url.userId;
-        } else if (structKeyExists(form, "userId")) {
+        } else if (structKeyExists(form, "userId") && len(form.userId) > 0) {
             groupId = form.userId;
+        } else {
+            request.muraSimplify.newUserGroup = true;
         }
 
         var queryService = new Query();
@@ -53,5 +55,56 @@ component {
         request.muraSimplify.qFeatures = queryService.execute().getResult();
 
         this.pluginConfig.addToHtmlHeadQueue("views/user-group/edit.cfm");
+    }
+    public any function save() {
+        if(!structKeyExists(form, "muraSimplifyData")
+            || !structKeyExists(form.muraSimplifyData, "isUserGroup")) {
+            return;
+        }
+
+        var datasource = this.configBean.getDatasource();
+        var groupId = url.userId;
+
+        var queryService = new Query();
+        queryService.setDatasource(datasource);
+        queryService.setSql("
+            DELETE FROM
+                mura_simplify_group_feature
+            WHERE
+                groupId = :groupId
+        ");
+        queryService.addParam(
+            name = "groupId",
+            value = groupId,
+            cfSqlType = "cf_sql_char"
+        );
+        queryService.execute();
+
+        queryService = new Query();
+        queryService.setDatasource(datasource);
+        queryService.setSql("
+            INSERT INTO mura_simplify_group_feature (
+                groupId,
+                featureId
+            ) VALUES (
+                :groupId,
+                :featureId
+            )
+        ");
+        for (var featureId in form.muraSimplifyData.features) {
+            queryService.clearParams();
+            queryService.addParam(
+                name = "groupId",
+                value = groupId,
+                cfSqlType = "cf_sql_char"
+            );
+            queryService.addParam(
+                name = "featureId",
+                value = featureId,
+                cfSqlType = "cf_sql_integer"
+            );
+            queryService.execute();
+        }
+
     }
 };

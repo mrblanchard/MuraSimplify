@@ -5,23 +5,27 @@
         href="/plugins/MuraSimplify/includes/css/main.css" />
     <script>
         var muraSimplify = {
-            features: [
-                <cfloop query="request.muraSimplify.qFeatures">
-                    <cfif request.muraSimplify.qFeatures.currentRow gt 1>
-                        ,
-                    </cfif>
-                    {
-                        featureId: #request.muraSimplify.qFeatures.featureId#,
-                        code: "#request.muraSimplify.qFeatures.code#",
-                        label: "#request.muraSimplify.qFeatures.label#",
-                        parentId: #request.muraSimplify.qFeatures.parentId#,
-                        required: #request.muraSimplify.qFeatures.required#,
-                        enabled: #request.muraSimplify.qFeatures.enabled#
-                    }
-                </cfloop>
-            ]
         };
-        $(document).ready(function() {
+        muraSimplify.features = [
+            <cfloop query="request.muraSimplify.qFeatures">
+                <cfif request.muraSimplify.qFeatures.currentRow gt 1>
+                    ,
+                </cfif>
+                {
+                    featureId: #request.muraSimplify.qFeatures.featureId#,
+                    code: "#request.muraSimplify.qFeatures.code#",
+                    label: "#request.muraSimplify.qFeatures.label#",
+                    parentId: #request.muraSimplify.qFeatures.parentId#,
+                    required: #request.muraSimplify.qFeatures.required#,
+                    enabled: #request.muraSimplify.qFeatures.enabled#
+                }
+            </cfloop>
+        ];
+        muraSimplify.userGroup = {
+            isNew: #structKeyExists(
+                request.muraSimplify, "newUserGroup") ? 'true': 'false'#
+        };
+        muraSimplify.userGroup.initFormTabs = function() {
             var $form = $('form[name=form1]');
             $form.removeClass('fieldset-wrap');
             $form.append('\
@@ -60,8 +64,15 @@
             $tabBasic.append($form.children('.fieldset'));
             $tabBasic.append($form.children('##extendSetBasic'));
             $('.tab-content').append($form.children('.form-actions'));
-            $features = $('##mura-simplify-features');
-            var name,
+            $form.append('<input\
+                type="hidden"\
+                name="muraSimplifyData.isUserGroup"\
+                value="1" />\
+            ');
+        }
+        muraSimplify.userGroup.initFormFeatures = function() {
+            var $features = $('##mura-simplify-features'),
+                name,
                 hierarchy = {},
                 hierarchyId,
                 depth,
@@ -69,7 +80,9 @@
                 checked,
                 featureId,
                 parentId,
-                readonly;
+                readonly,
+                extra,
+                label;
             for(var i = 0; i < muraSimplify.features.length; i++) {
                 hierarchy[muraSimplify.features[i].featureId] = 
                     muraSimplify.features[i].parentId;
@@ -79,6 +92,8 @@
                 style = '';
                 checked = '';
                 readonly = '';
+                extra = '';
+                label = muraSimplify.features[i].label;
                 hierarchyId = muraSimplify.features[i].featureId;
                 featureId = muraSimplify.features[i].featureId;
                 parentId = muraSimplify.features[i].parentId;
@@ -90,13 +105,20 @@
                     hierarchyId = hierarchy[hierarchyId];
                 }
                 if (depth > 0) {
-                    style = ' style="margin-left: ' + (depth * 30) + 'px;"';
+                    style = 'style="margin-left: ' + (depth * 30) + 'px;"';
                 }
-                if (muraSimplify.features[i].enabled > 0) {
-                    checked = ' checked="checked"';
+                if (muraSimplify.features[i].enabled > 0
+                    || muraSimplify.userGroup.isNew) {
+                    checked = 'checked="checked"';
                 }
                 if (muraSimplify.features[i].required > 0) {
-                    readonly = ' disabled="disabled"';
+                    readonly = 'disabled="disabled"';
+                    extra = '\
+                        <input\
+                            type="hidden"\
+                            name="' + name + '"\
+                            value="on" />\
+                    ';
                 }
                 $features.append('\
                     <label\
@@ -109,10 +131,13 @@
                             data-parent-id="' + parentId + '"\
                             ' + readonly + '\
                             ' + checked + ' />\
-                        <span>' + muraSimplify.features[i].label + '</span>\
+                        <span>' + label + '</span>\
+                        ' + extra + '\
                     </label>\
                 ');
             }
+        }
+        muraSimplify.userGroup.initFormFeatureRules = function() {
             $('.mura-simplify-checkbox input').on('change', function() {
                 var $this = $(this);
                 var parentId = $this.attr('data-parent-id');
@@ -133,6 +158,7 @@
 
                     // If all siblings are unchecked, uncheck the parent
                     if ($siblings.filter(':checked').length < 1) {
+
                         if ($parent.is(':checked')) {
                             $parent.prop('checked', false);
                             $parent.trigger('change');
@@ -146,8 +172,13 @@
                         $child.trigger('change');
                     });
                 }
-
             });
+        }
+
+        $(document).ready(function() {
+            muraSimplify.userGroup.initFormTabs();
+            muraSimplify.userGroup.initFormFeatures();
+            muraSimplify.userGroup.initFormFeatureRules();
         });
     </script>
 </cfoutput>

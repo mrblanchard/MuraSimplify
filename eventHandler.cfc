@@ -13,6 +13,10 @@ component extends="mura.plugin.pluginGenericEventHandler"  {
             "cPrivateUsers.editgroup": {
                 controller: "UserGroup" ,
                 method: "edit"
+            },
+            "cPrivateUsers.update": {
+                controller: "UserGroup",
+                method: "save"
             }
         };
 

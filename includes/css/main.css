@@ -1,0 +1,7 @@
+.mura-simplify-checkbox input {
+    float: left;
+}
+.mura-simplify-checkbox span {
+    float: left;
+    margin: -1px 0 0 4px;
+}

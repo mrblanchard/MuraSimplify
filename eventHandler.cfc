@@ -1,7 +1,29 @@
-component accessors=true extends='mura.plugin.pluginGenericEventHandler' output=false {
+component extends="mura.plugin.pluginGenericEventHandler"  {
 
     public any function onGlobalRequestStart($) {
-        if (cgi.script_name == "/admin/index.cfm") {
+
+        var muraAction = "";
+        if (structKeyExists(url, "muraAction")) {
+            muraAction = url.muraAction;
+        } else if (structKeyExists(form, "muraAction")) {
+            muraAction = form.muraAction;
+        }
+
+        var actions = {
+            "cPrivateUsers.editgroup": {
+                controller: "UserGroup" ,
+                method: "edit"
+            }
+        };
+
+        if (structKeyExists(actions, muraAction)) {
+            var controller = createObject(
+                "component",
+                "controllers." & actions[muraAction].controller
+            ).init();
+            controller.setPluginConfig(variables.pluginConfig);
+            controller.setConfigBean(variables.configBean);
+            controller[actions[muraAction].method]();
         }
     }
 

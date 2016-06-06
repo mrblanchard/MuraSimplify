@@ -1,21 +1,8 @@
-component {
+component extends="Base" {
 
-    property name="pluginConfig";
-    property name="configBean";
-
-    public any function init() {
-        return this;
-    }
-    public any function setPluginConfig(pluginConfig) {
-        this.pluginConfig = arguments.pluginConfig;
-    }
-    public any function setConfigBean(configBean) {
-        this.configBean = arguments.configBean;
-    }
     public any function edit() {
 
         var datasource = this.configBean.getDatasource();
-        request.muraSimplify = {};
 
         var groupId = "";
         if (structKeyExists(url, "userId") && len(url.userId) > 0) {
@@ -56,6 +43,7 @@ component {
 
         this.pluginConfig.addToHtmlHeadQueue("views/user-group/edit.cfm");
     }
+
     public any function save() {
         if(!structKeyExists(form, "muraSimplifyData")
             || !structKeyExists(form.muraSimplifyData, "isUserGroup")) {
@@ -105,6 +93,6 @@ component {
             );
             queryService.execute();
         }
-
     }
+
 };

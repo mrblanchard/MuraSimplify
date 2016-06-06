@@ -1,22 +1,39 @@
 # Mura Simplify
 
-Mura Simplify is a plugin for Mura CMS that enables you to simplify the user experience of the administration area for different user roles. It can enable or disable a wide variety of features of the administration area, including the main navigation, site manager columns, content tabs and content attributes.
+Mura Simplify is a plugin for Mura CMS that enables you to simplify the user
+experience of the administration area for different user roles. It can enable
+or disable a wide variety of features of the administration area, including the
+main navigation, site manager columns, content tabs and content attributes.
 
 ## Minimum Requirements
 
-- Mura CMS v6.x
+- Mura CMS 6+
+- Chrome, Firefox, Internet Explorer 9+ or Safari
 
 ## Important notice
 
-Mura Simplify is not a security plugin or permission system. It simply tries to make the administration area easier to use for authorized users. It provides this simplification through the use of CSS and Javascript.
+Mura Simplify is not a security plugin or permission system. It simply tries to
+make the administration area easier to use for authorized users. It provides
+this simplification through the use of CSS and Javascript.
 
 ## Installation
 
-Download the [latest stable release](https://github.com/david-conde/MuraSimplify/releases) to your computer. Login to your Mura CMS administration area and use the main navigation to navigate to **Settings / Plugins**. Under "Install Plugin" select "Upload file" and select the downloaded release. Click "Deploy to start the installation". After accepting the terms of the license you will be brought to the setup page where you can choose which sites to enable the plugin for and finalize the installation.
+Download the
+[latest stable release](https://github.com/david-conde/MuraSimplify/releases)
+to your computer. Login to your Mura CMS administration area and use the main
+navigation to navigate to **Settings / Plugins**. Under "Install Plugin" select
+"Upload file" and select the downloaded release. Click "Deploy to start the
+installation". After accepting the terms of the license you will be brought to
+the setup page where you can choose which sites to enable the plugin for and
+finalize the installation.
 
 ## Basic Usage
 
-Use the main navigation to navigate to **Users / View System Groups**. For any system group except the "Admin" group select the edit icon or add a new system group. On the next page select the tab "Mura Simplify" and start customizing the user experience for this group. Any user of this group who logs into the administration area will now only see the enabled features.
+Use the main navigation to navigate to **Users / View System Groups**. For any
+system group except the "Admin" group select the edit icon or add a new system
+group. On the next page select the tab "Mura Simplify" and start customizing
+the user experience for this group. Any user of this group who logs into the
+administration area will now only see the enabled features.
 
 ## License
 
